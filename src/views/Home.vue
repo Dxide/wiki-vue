@@ -1,5 +1,6 @@
 <template>
 <h1>hello</h1>
+  <el-button>hello</el-button>
 </template>
 
 <script>
