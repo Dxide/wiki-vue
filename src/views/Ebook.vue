@@ -11,17 +11,24 @@
     </el-aside>
 
     <el-main>
-      main1223
+      <pre>{{ ebooks }}</pre>
+
     </el-main>
   </el-container>
 </template>
 
 <script lang="ts" setup>
 import request from "@/util/request";
+import {onMounted, ref} from "vue";
 
-request.get("ebook").then((response)=>{
-  console.log(response.data)
+const ebooks=ref()//电子书列表
+
+onMounted(()=>{
+  request.get("ebook",{params:{search:"spring"}}).then((response)=>{
+    ebooks.value=response.data
+  })
 })
+
 </script>
 
 <style scoped>
