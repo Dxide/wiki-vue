@@ -15,7 +15,7 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-interface Response{
+interface Resp{
   code:number
   message:string
   data:string

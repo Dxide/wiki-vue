@@ -17,7 +17,11 @@
 </template>
 
 <script lang="ts" setup>
+import request from "@/util/request";
 
+request.get("ebook").then((response)=>{
+  console.log(response.data)
+})
 </script>
 
 <style scoped>

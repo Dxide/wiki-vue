@@ -1,11 +1,12 @@
 import axios from "axios";
+import {ElMessage} from "element-plus";
 
 const request=axios.create({
     baseURL:import.meta.env.VITE_URL
 })
 
 // 添加请求拦截器
-axios.interceptors.request.use(function (config) {
+request.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     return config;
 }, function (error) {
@@ -14,15 +15,20 @@ axios.interceptors.request.use(function (config) {
 });
 
 // 添加响应拦截器
-axios.interceptors.response.use(function (response) {
+request.interceptors.response.use(function (response) {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
-    let resp:Response
-    resp=response.data
-    return resp;
+    let resp:Resp=response.data
+    if(resp.code==200){//成功
+        return resp
+    }else {//失败
+        ElMessage.error(resp.message)
+    }
 }, function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    ElMessage.error("请求出错，错误代码（"+error.response.status+"）")
+    console.log(error)
     return Promise.reject(error);
 });
 
