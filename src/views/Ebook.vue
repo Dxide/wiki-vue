@@ -14,12 +14,23 @@
       <el-row :gutter="30">
         <el-col :span="8" v-for="ebook in ebooks" style="margin-bottom: 30px">
           <el-card>
-            <template #header>
-              <div>
-                <span>{{ ebook.name}}</span>
-              </div>
-            </template>
-            <div>{{ebook.description}}</div>
+            <el-container direction="vertical">
+              <el-container>
+                <el-avatar shape="square" :size="50" :src="ebook.cover" style="width: 50px;"/>
+                <el-container direction="vertical" style="margin-left: 10px">
+                  <span>{{ebook.name}}</span>
+                  <el-container style="margin-top: 10px">
+                    <el-icon><Document/></el-icon>
+                    &nbsp;{{ebook.docCount}}&nbsp;&nbsp;
+                    <el-icon><View/></el-icon>
+                    &nbsp;{{ebook.viewCount}}&nbsp;&nbsp;
+                    <el-icon><Star/></el-icon>
+                    &nbsp;{{ebook.voteCount}}
+                  </el-container>
+                </el-container>
+              </el-container>
+                <span style="font-size: 12px;color: #909090;margin-top: 5px">{{ebook.description}}</span>
+            </el-container>
           </el-card>
         </el-col>
       </el-row>
@@ -30,6 +41,7 @@
 <script lang="ts" setup>
 import request from "@/util/request";
 import {onMounted, ref} from "vue";
+import {Star,View,Document} from '@element-plus/icons-vue'
 
 const ebooks=ref()//电子书列表
 
