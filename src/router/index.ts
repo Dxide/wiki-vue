@@ -1,13 +1,14 @@
 import { createRouter,  createWebHistory ,RouteRecordRaw} from 'vue-router'
-
+import Home from '@/views/Home.vue'
 // 下面使用了es6的对象增强写法，命名必须是routes
 const routes:Array<RouteRecordRaw> = [
   {
     path: '/',
-    component:()=>import('@/views/Home.vue'),
+    component: Home,
     redirect:'ebook',
     children:[
-      {path:'ebook',component:()=>import('@/views/Ebook.vue')}
+      {path:'ebook',component:()=>import('@/views/Ebook.vue')},
+      {path:'about',component:()=>import('@/views/About.vue')}
     ]
   }
 ]
