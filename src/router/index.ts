@@ -8,7 +8,8 @@ const routes:Array<RouteRecordRaw> = [
     redirect:'ebook',
     children:[
       {path:'ebook',component:()=>import('@/views/Ebook.vue')},
-      {path:'about',component:()=>import('@/views/About.vue')}
+      {path:'about',component:()=>import('@/views/About.vue')},
+      {path:'admin/ebook',component:()=>import('@/views/admin/admin-ebook.vue')},
     ]
   }
 ]
