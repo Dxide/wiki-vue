@@ -1,9 +1,15 @@
 <template>
   <el-main>
 
-    <div style="margin-bottom: 10px;float: right">
-      <el-button type="primary" @click="clickInsert">新增</el-button>
-    </div>
+    <el-form :inline="true" style="float: right">
+      <el-form-item>
+        <el-input v-model="search" placeholder="搜索" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getEbooks">搜索</el-button>
+        <el-button type="primary" @click="clickInsert">新增</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-table :data="ebooks" border style="width: 100%;" size="large" v-loading="tableLoading" >
       <el-table-column label="封面" width="100px">
@@ -81,6 +87,7 @@ const tableLoading=ref(true)//表格加载
 const submitLoading=ref(false)//提交加载框
 const dialogVisible=ref(false)//编辑页面对话框
 const dialogTitle=ref()//对话框标签
+const search=ref();
 const ebookForm=ref({})//电子书表单
 const pageInfo=ref({
   total: 0,
@@ -91,7 +98,7 @@ const pageInfo=ref({
 const getEbooks=()=>{
   tableLoading.value=true
   request.get("ebook",{params:{currentPage:pageInfo.value.current
-      ,pageSize:pageInfo.value.size}}).then((response)=>{
+      ,pageSize:pageInfo.value.size,search:search.value}}).then((response)=>{
       pageInfo.value.total=response.data.total
       ebooks.value=response.data.records
       tableLoading.value=false
