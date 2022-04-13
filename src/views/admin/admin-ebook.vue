@@ -2,7 +2,7 @@
   <el-main>
 
     <div style="margin-bottom: 10px;float: right">
-      <el-button type="primary">新增</el-button>
+      <el-button type="primary" @click="clickInsert">新增</el-button>
     </div>
 
     <el-table :data="ebooks" border style="width: 100%;" size="large" v-loading="tableLoading" >
@@ -73,7 +73,7 @@
 <script lang="ts" setup>
 import request from "@/util/request";
 import {onMounted, ref} from "vue";
-import {InfoFilled,Delete,Edit} from '@element-plus/icons-vue'
+import {InfoFilled} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
 
 const ebooks=ref()//电子书列表
@@ -81,19 +81,12 @@ const tableLoading=ref(true)//表格加载
 const submitLoading=ref(false)//提交加载框
 const dialogVisible=ref(false)//编辑页面对话框
 const dialogTitle=ref()//对话框标签
-const ebookForm=ref({
-  id:'',
-  cover:'',
-  name:'',
-  categoryId:'',
-  description:''
-})//电子书表单
+const ebookForm=ref({})//电子书表单
 const pageInfo=ref({
   total: 0,
   size: 5,
   current: 1
 })//分页数据
-
 
 const getEbooks=()=>{
   tableLoading.value=true
@@ -109,6 +102,11 @@ const clickEdit=(row:object)=>{
   dialogVisible.value=true
   ebookForm.value=JSON.parse(JSON.stringify(row))
 }//编辑按钮点击事件
+const clickInsert=()=>{
+  dialogTitle.value="新增"
+  ebookForm.value={}
+  dialogVisible.value=true
+}//新增点击事件
 const submit=()=>{
   submitLoading.value=true
   request.post("ebook/admin",ebookForm.value).then((response:any)=>{
