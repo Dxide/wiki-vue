@@ -28,6 +28,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+        v-model:currentPage="pageInfo.current"
+        v-model:page-size="pageInfo.size"
+        :page-sizes="[5, 10, 15, 20]"
+        layout="total, sizes, prev, pager, next"
+        :total="pageInfo.total"
+        @current-change="getEbooks"
+        @size-change="getEbooks"
+        style="margin-top: 10px;float: right"
+    />
   </el-main>
 </template>
 
@@ -38,12 +48,19 @@ import {InfoFilled,Delete,Edit} from '@element-plus/icons-vue'
 
 const ebooks=ref()//电子书列表
 const tableLoading=ref(true)//表格加载
+const pageInfo=ref({//分页数据
+  total: 0,
+  size: 5,
+  current: 1
+})
 
 const getEbooks=()=>{//获取电子书列表
   tableLoading.value=true
-  request.get("ebook").then((response)=>{
-    ebooks.value=response.data
-    tableLoading.value=false
+  request.get("ebook",{params:{currentPage:pageInfo.value.current
+      ,pageSize:pageInfo.value.size}}).then((response)=>{
+      pageInfo.value.total=response.data.total
+      ebooks.value=response.data.records
+      tableLoading.value=false
   })
 }
 

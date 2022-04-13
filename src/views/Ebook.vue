@@ -46,7 +46,7 @@ import {Star,View,Document} from '@element-plus/icons-vue'
 const ebooks=ref()//电子书列表
 
 const getEbooks=()=>{//获取电子书列表
-  request.get("ebook").then((response)=>{
+  request.get("ebook/all").then((response)=>{
     ebooks.value=response.data
   })
 }
