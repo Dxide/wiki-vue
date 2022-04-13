@@ -24,8 +24,8 @@
               cancel-button-text="取消"
               :icon="InfoFilled"
               icon-color="red"
-              title="确定删除这个用户吗?"
-              @confirm="handleDeleteUserById(scope.row.id)">
+              title="删除后不可恢复，确认删除?"
+              @confirm="clickDelete(scope.row.id)">
             <template #reference>
               <el-button type="danger">删除</el-button>
             </template>
@@ -117,6 +117,12 @@ const submit=()=>{
     submitLoading.value=false
   })
 }//提交
+const clickDelete=(id:string)=>{
+  request.delete("ebook/admin/"+id).then((response:any)=>{
+    ElMessage.success(response.message)
+    getEbooks()
+  })
+}//删除点击事件
 
 onMounted(()=>{
   getEbooks()
