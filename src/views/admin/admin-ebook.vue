@@ -1,5 +1,10 @@
 <template>
   <el-main>
+
+    <div style="margin-bottom: 10px;float: right">
+      <el-button type="primary">新增</el-button>
+    </div>
+
     <el-table :data="ebooks" border style="width: 100%;" size="large" v-loading="tableLoading" >
       <el-table-column label="封面" width="100px">
         <template #default="scope">
@@ -40,7 +45,7 @@
         style="margin-top: 10px;float: right"
     />
 
-    <el-dialog v-model="dialogEditVisible" title="编辑" width="40%">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="40%">
       <el-form :model="ebookForm">
         <el-form-item label="封面" >
           <el-input v-model="ebookForm.cover" clearable/>
@@ -57,8 +62,8 @@
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogEditVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogEditVisible = false">提交</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submit" :loading="submitLoading">提交</el-button>
       </span>
       </template>
     </el-dialog>
@@ -69,12 +74,15 @@
 import request from "@/util/request";
 import {onMounted, ref} from "vue";
 import {InfoFilled,Delete,Edit} from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
 
 const ebooks=ref()//电子书列表
 const tableLoading=ref(true)//表格加载
 const submitLoading=ref(false)//提交加载框
-const dialogEditVisible=ref(false)//编辑页面对话框
+const dialogVisible=ref(false)//编辑页面对话框
+const dialogTitle=ref()//对话框标签
 const ebookForm=ref({
+  id:'',
   cover:'',
   name:'',
   categoryId:'',
@@ -86,6 +94,7 @@ const pageInfo=ref({
   current: 1
 })//分页数据
 
+
 const getEbooks=()=>{
   tableLoading.value=true
   request.get("ebook",{params:{currentPage:pageInfo.value.current
@@ -96,9 +105,20 @@ const getEbooks=()=>{
   })
 }//获取电子书列表
 const clickEdit=(row:object)=>{
-  dialogEditVisible.value=true
+  dialogTitle.value="编辑"
+  dialogVisible.value=true
   ebookForm.value=JSON.parse(JSON.stringify(row))
 }//编辑按钮点击事件
+const submit=()=>{
+  submitLoading.value=true
+  request.post("ebook/admin",ebookForm.value).then((response:any)=>{
+    ElMessage.success(response.message)
+    dialogVisible.value=false
+    getEbooks()
+  }).finally(()=>{
+    submitLoading.value=false
+  })
+}//提交
 
 onMounted(()=>{
   getEbooks()
