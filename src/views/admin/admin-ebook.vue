@@ -5,6 +5,16 @@
         <el-input v-model="search" placeholder="搜索" clearable />
       </el-form-item>
       <el-form-item>
+        <el-select v-model="selectCategory" clearable>
+          <el-option
+              v-for="item in category"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" @click="getEbooks">搜索</el-button>
         <el-button type="primary" @click="clickInsert">新增</el-button>
       </el-form-item>
@@ -59,7 +69,7 @@
           <el-input v-model="ebookForm.name" clearable/>
         </el-form-item>
         <el-form-item label="分类" >
-          <el-select v-model="ebookForm.categoryId" placeholder="Select">
+          <el-select v-model="ebookForm.categoryId">
             <el-option
                 v-for="item in category"
                 :key="item.id"
@@ -93,7 +103,7 @@ const tableLoading=ref(true)//表格加载
 const submitLoading=ref(false)//提交加载框
 const dialogVisible=ref(false)//编辑页面对话框
 const dialogTitle=ref()//对话框标签
-const search=ref();
+const search=ref();//搜索内容
 const ebookForm=ref({})//电子书表单
 const pageInfo=ref({
   total: 0,
@@ -101,15 +111,20 @@ const pageInfo=ref({
   current: 1
 })//分页数据
 const category=ref();//分类列表
+const selectCategory=ref()//选择的类别
 
 const getEbooks=()=>{
   tableLoading.value=true
-  request.get("ebook",{params:{currentPage:pageInfo.value.current
-      ,pageSize:pageInfo.value.size,search:search.value}}).then((response)=>{
+  request.get("ebook",{params:{
+      currentPage:pageInfo.value.current,
+      pageSize:pageInfo.value.size,
+      search:search.value,
+      categoryId:selectCategory.value
+  }}).then((response)=>{
       pageInfo.value.total=response.data.total
       ebooks.value=response.data.records
       tableLoading.value=false
-    transFormEbooks()
+      transFormEbooks()
   })
 }//获取电子书列表
 const clickEdit=(row:object)=>{
