@@ -1,6 +1,5 @@
 <template>
   <el-main>
-
     <el-form :inline="true" style="float: right">
       <el-form-item>
         <el-input v-model="search" placeholder="搜索" clearable />
