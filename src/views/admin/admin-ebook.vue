@@ -59,7 +59,14 @@
           <el-input v-model="ebookForm.name" clearable/>
         </el-form-item>
         <el-form-item label="分类" >
-          <el-input v-model="ebookForm.categoryId" />
+          <el-select v-model="ebookForm.categoryId" placeholder="Select">
+            <el-option
+                v-for="item in category"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" >
           <el-input v-model="ebookForm.description" type="textarea" clearable/>
@@ -93,6 +100,7 @@ const pageInfo=ref({
   size: 5,
   current: 1
 })//分页数据
+const category=ref();//分类列表
 
 const getEbooks=()=>{
   tableLoading.value=true
@@ -101,6 +109,7 @@ const getEbooks=()=>{
       pageInfo.value.total=response.data.total
       ebooks.value=response.data.records
       tableLoading.value=false
+    transFormEbooks()
   })
 }//获取电子书列表
 const clickEdit=(row:object)=>{
@@ -129,9 +138,24 @@ const clickDelete=(id:string)=>{
     getEbooks()
   })
 }//删除点击事件
-
+const getCategory=()=>{
+  request.get("category").then((response)=>{
+    category.value=response.data
+    getEbooks()
+  })
+}//获取分类列表
+const transFormEbooks=()=>{
+  ebooks.value.map((ebook:any)=>{
+    category.value.map((item:any)=>{
+      if (item.id==ebook.categoryId){
+        ebook.categoryId=item.name
+      }
+    })
+  })
+  console.log(ebooks.value)
+}//将ebooks里的categoryId修改为category里的name
 onMounted(()=>{
-  getEbooks()
+  getCategory()
 })//初始化
 </script>
 
