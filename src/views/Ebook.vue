@@ -2,14 +2,22 @@
   <el-container>
     <el-aside width="200px" style="border-right: 1px solid lightgray">
       <el-scrollbar>
-        <el-menu @select="onSelect">
-          <el-menu-item v-for="category in categories" :index="category.id">{{ category.name }}</el-menu-item>
+        <el-menu @select="onSelect" default-active="0">
+          <el-menu-item index="0">
+          <el-icon><House/></el-icon>
+            <span>欢迎</span>
+          </el-menu-item>
+          <el-menu-item v-for="category in categories" :index="category.id">
+            <el-icon><Postcard/></el-icon>
+            <span>{{ category.name }}</span>
+          </el-menu-item>
         </el-menu>
       </el-scrollbar>
     </el-aside>
 
     <el-main>
-      <el-row :gutter="30">
+      <welcome v-show="isWelcome"/>
+      <el-row :gutter="30" v-show="!isWelcome">
         <el-col :span="8" v-for="ebook in ebooks" style="margin-bottom: 30px">
           <el-card>
             <el-container direction="vertical">
@@ -39,11 +47,12 @@
 <script lang="ts" setup>
 import request from "@/util/request";
 import {onMounted, ref} from "vue";
-import {Star,View,Document} from '@element-plus/icons-vue'
+import {Star,View,Document,House,Postcard} from '@element-plus/icons-vue'
+import Welcome from "@/components/welcome.vue";
 
 const ebooks=ref()//电子书列表
 const categories=ref()//分类列表
-
+const isWelcome=ref(true)//是否为欢迎界面
 
 const getEbooks=(category:string)=>{
   request.get("ebook/all",{params:{category:category}}).then((response)=>{
@@ -53,11 +62,16 @@ const getEbooks=(category:string)=>{
 const getCategory=()=>{
   request.get("category").then((response)=>{
     categories.value=response.data
-    getEbooks("")
   })
 }//获取分类列表
 const onSelect=(index:string)=>{
-  getEbooks(index)
+  if (index=="0")
+    isWelcome.value=true
+  else {
+    isWelcome.value=false
+    getEbooks(index)
+  }
+
 }//选择事件
 
 onMounted(()=>{
