@@ -2,10 +2,8 @@
   <el-container>
     <el-aside width="200px" style="border-right: 1px solid lightgray">
       <el-scrollbar>
-        <el-menu>
-          <el-menu-item >
-            <span>hello</span>
-          </el-menu-item>
+        <el-menu @select="onSelect">
+          <el-menu-item v-for="category in categories" :index="category.id">{{ category.name }}</el-menu-item>
         </el-menu>
       </el-scrollbar>
     </el-aside>
@@ -44,14 +42,26 @@ import {onMounted, ref} from "vue";
 import {Star,View,Document} from '@element-plus/icons-vue'
 
 const ebooks=ref()//电子书列表
+const categories=ref()//分类列表
 
-const getEbooks=()=>{//获取电子书列表
-  request.get("ebook/all").then((response)=>{
+
+const getEbooks=(category:string)=>{
+  request.get("ebook/all",{params:{category:category}}).then((response)=>{
     ebooks.value=response.data
   })
-}
+}//获取电子书列表
+const getCategory=()=>{
+  request.get("category").then((response)=>{
+    categories.value=response.data
+    getEbooks("")
+  })
+}//获取分类列表
+const onSelect=(index:string)=>{
+  getEbooks(index)
+}//选择事件
+
 onMounted(()=>{
-  getEbooks()
+  getCategory()
 })
 
 </script>
