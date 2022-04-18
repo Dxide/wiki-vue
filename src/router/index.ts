@@ -11,9 +11,11 @@ const routes:Array<RouteRecordRaw> = [
       {path:'about',component:()=>import('@/views/About.vue')},
       {path:'admin/ebook',component:()=>import('@/views/admin/AdminEbook.vue')},
       {path:'admin/category',component:()=>import('@/views/admin/AdminCategory.vue')},
-      {path:'admin/doc',component:()=>import('@/views/admin/AdminDoc.vue')},
+      {path:'admin/doc/:ebookId',component:()=>import('@/views/admin/AdminDoc.vue')},
     ]
-  }
+  },
+  //404NotFound界面
+  { path: '/:pathMatch(.*)*', component: ()=>import('@/views/NotFound.vue') }
 ]
 
 // 创建路由
