@@ -31,8 +31,9 @@
       <el-table-column prop="docCount" label="文档数" />
       <el-table-column prop="viewCount" label="阅读数" />
       <el-table-column prop="voteCount" label="点赞数" />
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="300px">
         <template #default="scope">
+          <el-button  @click="toDoc(scope.row.id)">文档管理</el-button>
           <el-button  @click="clickEdit(scope.row)">编辑</el-button>
           <el-popconfirm
               confirm-button-text="确定"
@@ -97,6 +98,7 @@ import request from "@/util/request";
 import {onMounted, ref} from "vue";
 import {InfoFilled} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
+import router from "@/router";
 
 const ebooks=ref()//电子书列表
 const tableLoading=ref(true)//表格加载
@@ -169,6 +171,10 @@ const transFormEbooks=()=>{
   })
   console.log(ebooks.value)
 }//将ebooks里的categoryId修改为category里的name
+const toDoc=(ebookId:string)=>{
+  router.push('/admin/doc/'+ebookId)
+}//文档管理点击事件
+
 onMounted(()=>{
   getCategory()
 })//初始化
