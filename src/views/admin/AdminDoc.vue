@@ -13,7 +13,7 @@
           <el-input v-model="docForm.name"></el-input>
         </el-form-item>
         <el-form-item label="父文档">
-          <el-tree-select v-model="docForm.parent" :data="theRoot" :props="defaultProps" check-strictly />
+          <el-tree-select v-model="docForm.parent" :data="treeSelect" :props="defaultProps" check-strictly />
         </el-form-item>
         <el-form-item label="排序">
           <el-input-number v-model="docForm.sort"></el-input-number>
@@ -31,12 +31,14 @@ import {onMounted, ref} from "vue";
 import request from "@/util/request";
 import {Tools} from "@/util/Tools";
 import {useRoute} from "vue-router";
+import {ElMessage} from "element-plus";
 
-const theRoot=ref([{
+const theRoot=[{
   id:"0",
   parent:"0",
   name:"无",
-}])//树根
+}]//树根
+const treeSelect=ref()//树形选择器的数据
 const docs=ref()//文档列表
 const defaultProps = {
   children: 'children',
@@ -51,14 +53,17 @@ const getDoc = () => {
   request.get("doc?ebookId="+ebookId).then((response)=>{
     docs.value=response.data
     docs.value=Tools.toTree(docs.value,"0")//转换为树形结构
-    theRoot.value=theRoot.value.concat(docs.value)
+    treeSelect.value=theRoot.concat(docs.value)//添加无选项
   })
 }//获取文档列表
 const handleNodeClick = (data: any) => {
   console.log(data.id)
 }//节点点击事件
 const submit=()=>{
-  console.log(docForm.value)
+  request.post("doc/admin",docForm.value).then((response:any)=>{
+    ElMessage.success(response.message)
+    getDoc()
+  })
 }//提交
 
 onMounted(()=>{
