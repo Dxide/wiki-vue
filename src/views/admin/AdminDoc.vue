@@ -1,12 +1,15 @@
 <template>
   <el-container>
     <el-aside width="200px" style="border-right: 1px solid lightgray">
-      <div style="margin-top: 10px;margin-bottom: 10px;text-align: center">
-        <el-button type="primary" @click="getDoc">刷新</el-button>
-        <el-button type="primary" @click="add">新增</el-button>
-      </div>
-      <el-tree :data="docs" :props="defaultProps" @node-click="handleNodeClick" :highlight-current="true"
-               :default-expand-all="true"/>
+      <el-scrollbar height="100%">
+        <div style="margin-top: 10px;margin-bottom: 10px;text-align: center">
+          <el-button type="primary" @click="getDoc">刷新</el-button>
+          <el-button type="primary" @click="add">新增</el-button>
+        </div>
+        <el-tree :data="docs" :props="defaultProps" @node-click="handleNodeClick" :highlight-current="true"
+                 :default-expand-all="true" class="elTree"/>
+      </el-scrollbar>
+
     </el-aside>
     <el-main>
       <el-form :model="docForm" :inline="true">
@@ -67,7 +70,7 @@ const getDoc = () => {
       setDisable(treeSelect.value,docForm.value.id)
       reloadData()
     }
-    if (booleanSubmit) resetDocForm()
+    if (booleanSubmit.value) resetDocForm()
   })
 }//获取文档列表
 const handleNodeClick = (data: any) => {
@@ -142,6 +145,14 @@ onMounted(()=>{
 })
 </script>
 
-<style scoped>
+<style>
+
+.el-scrollbar .el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+.el-tree>.el-tree-node {
+  min-width: 100%;
+  display:inline-block;
+}
 
 </style>
