@@ -12,33 +12,49 @@
 
     </el-aside>
     <el-main>
-      <el-form :model="docForm" :inline="true">
-        <el-form-item label="名称">
-          <el-input v-model="docForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="父文档">
-          <el-tree-select v-if="isReloadData" v-model="docForm.parent" :data="treeSelect" :props="defaultProps" check-strictly
-                          :default-expand-all="true"/>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-input-number v-model="docForm.sort"></el-input-number>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submit" v-show="booleanSubmit">提交</el-button>
-          <el-button type="primary" @click="submit" v-show="!booleanSubmit">保存</el-button>
-          <el-button type="danger" @click="deleteDoc" v-show="!booleanSubmit">删除</el-button>
-        </el-form-item>
-      </el-form>
+        <div style="display: flex;flex-flow: column;height: 100%">
+          <el-form :model="docForm" :inline="true">
+            <el-form-item label="名称">
+              <el-input v-model="docForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="父文档">
+              <el-tree-select v-if="isReloadData" v-model="docForm.parent" :data="treeSelect" :props="defaultProps" check-strictly
+                              :default-expand-all="true"/>
+            </el-form-item>
+            <el-form-item label="排序">
+              <el-input-number v-model="docForm.sort"></el-input-number>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submit" v-show="booleanSubmit">提交</el-button>
+              <el-button type="primary" @click="submit" v-show="!booleanSubmit">保存</el-button>
+              <el-button type="danger" @click="deleteDoc" v-show="!booleanSubmit">删除</el-button>
+            </el-form-item>
+          </el-form>
+
+          <Toolbar
+              style="border-top: 1px solid #ccc;border-left: 1px solid #ccc;border-right: 1px solid #ccc"
+              :editor="editorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"/>
+          <Editor
+              style="height: 200px;flex:auto;border: 1px solid #ccc"
+              v-model="valueHtml"
+              mode="default"
+              :defaultConfig="editorConfig"
+              @onCreated="handleCreated"/>
+        </div>
     </el-main>
      </el-container>
 </template>
 
 <script lang="ts" setup>
-import {nextTick, onMounted, ref} from "vue";
+import '@wangeditor/editor/dist/css/style.css' // 引入 css
+import {nextTick, onBeforeUnmount, onMounted, ref, shallowRef} from "vue";
 import request from "@/util/request";
 import {Tools} from "@/util/Tools";
 import {useRoute} from "vue-router";
 import {ElMessage, ElMessageBox} from "element-plus";
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 const theRoot=[{
   id:"0",
@@ -142,6 +158,24 @@ const reloadData = () => {
 const resetDocForm=()=>{
   docForm.value={ebookId:ebookId,sort:0,id:''}
 }//重置DOC表单
+
+
+//wangEditor
+// 编辑器实例，必须用 shallowRef
+const editorRef = shallowRef()
+// 内容 HTML
+const valueHtml = ref()
+const toolbarConfig = {excludeKeys: 'fullScreen'}
+// 组件销毁时，也及时销毁编辑器
+onBeforeUnmount(() => {
+  const editor = editorRef.value
+  if (editor == null) return
+  editor.destroy()
+})
+const editorConfig = {}
+const handleCreated = (editor:any) => {
+  editorRef.value = editor // 记录 editor 实例，重要！
+}
 
 onMounted(()=>{
   getDoc()
