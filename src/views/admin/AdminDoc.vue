@@ -60,6 +60,7 @@ const docForm=ref({ebookId:ebookId,sort:0,id:''})//doc表单
 const booleanSubmit=ref(true)//当前模式，true新增，false修改
 const isReloadData=ref(true)//局部刷新组件
 let ids: string[]=[]//要删除的ids
+let names:string[]=[]//要删除的文档名称
 
 const getDoc = () => {
   request.get("doc?ebookId="+ebookId).then((response)=>{
@@ -76,6 +77,7 @@ const getDoc = () => {
 const handleNodeClick = (data: any) => {
   booleanSubmit.value=false
   ids=[]//清空删除的选项
+  names=[]
   docForm.value=Tools.copy(data)
   treeSelect.value=theRoot.concat(Tools.copy(docs.value))//重置treeSelect数据
   setDisable(treeSelect.value,data.id)
@@ -88,7 +90,7 @@ const submit=()=>{
 }//提交
 const deleteDoc=()=>{
   ElMessageBox.confirm(
-      '删除后不可恢复，且其子文档也会被删除!',
+      "删除后不可恢复，【"+names+"】都会被删除!",
       '警告',
       {
         confirmButtonText: '确定',
@@ -109,6 +111,7 @@ const setDisable=(treeSelectData:any,id:string)=>{
     const node=treeSelectData[i]
     if (node.id==id){//发现当前节点与与传入节点一样，禁用此选项
       ids.push(id)
+      names.push(node.name)
       node.disabled=true
       const children=node.children
       if (!Tools.isEmpty(children)){
