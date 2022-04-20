@@ -18,10 +18,11 @@
 </template>
 
 <script lang="ts" setup>
-import router from "@/router";
+import {useRouter} from "vue-router";
 
+const router=useRouter()
 const onClick=()=>{
-  router.push('/')
+  router.push('/ebook')
 }
 </script>
 

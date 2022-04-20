@@ -98,8 +98,9 @@ import request from "@/util/request";
 import {onMounted, ref} from "vue";
 import {InfoFilled} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
-import router from "@/router";
+import {useRouter} from "vue-router";
 
+const router=useRouter()
 const ebooks=ref()//电子书列表
 const tableLoading=ref(true)//表格加载
 const submitLoading=ref(false)//提交加载框
