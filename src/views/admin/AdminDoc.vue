@@ -7,7 +7,7 @@
           <el-button type="primary" @click="add">新增</el-button>
         </div>
         <el-tree :data="docs" :props="defaultProps" @node-click="handleNodeClick" :highlight-current="true"
-                 :default-expand-all="true" class="elTree"/>
+                 :default-expand-all="true" />
       </el-scrollbar>
 
     </el-aside>
@@ -72,7 +72,7 @@ const defaultProps = {
   emitPath:false,
 }//默认配置
 const ebookId=useRoute().params.ebookId//ebookId
-const docForm=ref({ebookId:ebookId,sort:0,id:''})//doc表单
+const docForm=ref({ebookId:ebookId,sort:0,id:'',content:''})//doc表单
 const booleanSubmit=ref(true)//当前模式，true新增，false修改
 const isReloadData=ref(true)//局部刷新组件
 let ids: string[]=[]//要删除的ids
@@ -97,8 +97,12 @@ const handleNodeClick = (data: any) => {
   docForm.value=Tools.copy(data)
   treeSelect.value=theRoot.concat(Tools.copy(docs.value))//重置treeSelect数据
   setDisable(treeSelect.value,data.id)
+  request.get("content/"+data.id).then((response)=>{
+    valueHtml.value=response.data.content
+  })
 }//节点点击事件
 const submit=()=>{
+  docForm.value.content=valueHtml.value
   request.post("doc/admin",docForm.value).then((response:any)=>{
     ElMessage.success(response.message)
     getDoc()
@@ -156,11 +160,11 @@ const reloadData = () => {
   })
 }//局部刷新组件
 const resetDocForm=()=>{
-  docForm.value={ebookId:ebookId,sort:0,id:''}
+  docForm.value={ebookId:ebookId,sort:0,id:'',content: ''}
 }//重置DOC表单
 
 
-//wangEditor
+//Editor
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 // 内容 HTML
@@ -176,6 +180,8 @@ const editorConfig = {}
 const handleCreated = (editor:any) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
+//Editor
+
 
 onMounted(()=>{
   getDoc()
