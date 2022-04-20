@@ -35,7 +35,7 @@ import {nextTick, onMounted, ref} from "vue";
 import request from "@/util/request";
 import {Tools} from "@/util/Tools";
 import {useRoute} from "vue-router";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const theRoot=[{
   id:"0",
@@ -67,6 +67,7 @@ const getDoc = () => {
       setDisable(treeSelect.value,docForm.value.id)
       reloadData()
     }
+    if (booleanSubmit) resetDocForm()
   })
 }//获取文档列表
 const handleNodeClick = (data: any) => {
@@ -83,10 +84,21 @@ const submit=()=>{
   })
 }//提交
 const deleteDoc=()=>{
-  request.delete("doc/admin/"+ids).then((response:any)=>{
-    ElMessage.success(response.message)
-    getDoc()
-  })
+  ElMessageBox.confirm(
+      '删除后不可恢复，且其子文档也会被删除!',
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  ).then(() => {
+        request.delete("doc/admin/"+ids).then((response:any)=>{
+          ElMessage.success(response.message)
+          add()
+          getDoc()
+        })
+      })
 }//删除文档
 const setDisable=(treeSelectData:any,id:string)=>{
   //遍历某一层节点
@@ -112,7 +124,7 @@ const setDisable=(treeSelectData:any,id:string)=>{
 }//设置不可用选项
 const add=()=>{
   booleanSubmit.value=true
-  docForm.value={ebookId:ebookId,sort:0,id:''}
+  resetDocForm()
   treeSelect.value=Tools.copy(theRoot).concat(Tools.copy(docs.value))//添加无选项
 }//添加按钮点击事件
 const reloadData = () => {
@@ -121,6 +133,9 @@ const reloadData = () => {
     isReloadData.value=true
   })
 }//局部刷新组件
+const resetDocForm=()=>{
+  docForm.value={ebookId:ebookId,sort:0,id:''}
+}//重置DOC表单
 
 onMounted(()=>{
   getDoc()
