@@ -23,7 +23,7 @@
         <el-form-item>
           <el-button type="primary" @click="submit" v-show="booleanSubmit">提交</el-button>
           <el-button type="primary" @click="submit" v-show="!booleanSubmit">保存</el-button>
-          <el-button type="danger" @click="deleteDoc(docForm.id)" v-show="!booleanSubmit">删除</el-button>
+          <el-button type="danger" @click="deleteDoc" v-show="!booleanSubmit">删除</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -56,6 +56,7 @@ const ebookId=useRoute().params.ebookId//ebookId
 const docForm=ref({ebookId:ebookId,sort:0,id:''})//doc表单
 const booleanSubmit=ref(true)//当前模式，true新增，false修改
 const isReloadData=ref(true)//局部刷新组件
+let ids: string[]=[]//要删除的ids
 
 const getDoc = () => {
   request.get("doc?ebookId="+ebookId).then((response)=>{
@@ -70,6 +71,7 @@ const getDoc = () => {
 }//获取文档列表
 const handleNodeClick = (data: any) => {
   booleanSubmit.value=false
+  ids=[]//清空删除的选项
   docForm.value=Tools.copy(data)
   treeSelect.value=theRoot.concat(Tools.copy(docs.value))//重置treeSelect数据
   setDisable(treeSelect.value,data.id)
@@ -80,14 +82,18 @@ const submit=()=>{
     getDoc()
   })
 }//提交
-const deleteDoc=(id:string)=>{
-  console.log(id)
+const deleteDoc=()=>{
+  request.delete("doc/admin/"+ids).then((response:any)=>{
+    ElMessage.success(response.message)
+    getDoc()
+  })
 }//删除文档
 const setDisable=(treeSelectData:any,id:string)=>{
   //遍历某一层节点
   for (let i=0;i<treeSelectData.length;i++){
     const node=treeSelectData[i]
     if (node.id==id){//发现当前节点与与传入节点一样，禁用此选项
+      ids.push(id)
       node.disabled=true
       const children=node.children
       if (!Tools.isEmpty(children)){
