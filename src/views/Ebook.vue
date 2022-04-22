@@ -7,6 +7,10 @@
           <el-icon><House/></el-icon>
             <span>欢迎</span>
           </el-menu-item>
+          <el-menu-item index="">
+            <el-icon><Postcard/></el-icon>
+            <span>全部</span>
+          </el-menu-item>
           <el-menu-item v-for="category in categories" :index="category.id">
             <el-icon><Postcard/></el-icon>
             <span>{{ category.name }}</span>
@@ -71,7 +75,6 @@ const onSelect=(index:string)=>{
     isWelcome.value=false
     getEbooks(index)
   }
-
 }//选择事件
 
 onMounted(()=>{
