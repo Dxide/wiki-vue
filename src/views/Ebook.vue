@@ -28,7 +28,7 @@
               <el-container>
                 <el-avatar shape="square" :size="50" :src="ebook.cover" style="width: 50px;"/>
                 <el-container direction="vertical" style="margin-left: 10px">
-                  <span>{{ebook.name}}</span>
+                  <router-link :to="'/doc/'+ebook.id" >{{ebook.name}}</router-link>
                   <el-container style="margin-top: 10px">
                     <el-icon><Document/></el-icon>
                     &nbsp;{{ebook.docCount}}&nbsp;&nbsp;
@@ -84,5 +84,8 @@ onMounted(()=>{
 </script>
 
 <style scoped>
-
+a{
+  text-decoration: none;
+  color:#606266 ;
+}
 </style>

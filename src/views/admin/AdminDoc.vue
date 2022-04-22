@@ -51,7 +51,7 @@
       title="内容预览"
       size="70%"
       direction="ltr">
-    <div v-html="valueHtml" id="innerHtml"></div>
+    <div v-html="valueHtml"></div>
   </el-drawer>
 </template>
 

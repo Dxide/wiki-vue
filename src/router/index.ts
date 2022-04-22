@@ -12,6 +12,7 @@ const routes:Array<RouteRecordRaw> = [
       {path:'admin/ebook',component:()=>import('@/views/admin/AdminEbook.vue')},
       {path:'admin/category',component:()=>import('@/views/admin/AdminCategory.vue')},
       {path:'admin/doc/:ebookId',component:()=>import('@/views/admin/AdminDoc.vue')},
+      {path:'/doc/:ebookId',component:()=>import('@/views/Doc.vue')},
     ]
   },
   //404NotFound界面
