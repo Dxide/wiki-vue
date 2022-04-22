@@ -28,6 +28,7 @@
               <el-button type="primary" @click="submit" v-show="booleanSubmit">提交</el-button>
               <el-button type="primary" @click="submit" v-show="!booleanSubmit">保存</el-button>
               <el-button type="danger" @click="deleteDoc" v-show="!booleanSubmit">删除</el-button>
+              <el-button type="primary" @click="clickShowDrawer" >内容预览</el-button>
             </el-form-item>
           </el-form>
 
@@ -45,6 +46,13 @@
         </div>
     </el-main>
      </el-container>
+  <el-drawer
+      v-model="drawerVisible"
+      title="内容预览"
+      size="70%"
+      direction="ltr">
+    <div v-html="valueHtml" id="innerHtml"></div>
+  </el-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -55,6 +63,8 @@ import {Tools} from "@/util/Tools";
 import {useRoute} from "vue-router";
 import {ElMessage, ElMessageBox} from "element-plus";
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import "prismjs/themes/prism.css"//
+import Prismjs from "prismjs";//
 
 const theRoot=[{
   id:"0",
@@ -77,6 +87,7 @@ const booleanSubmit=ref(true)//当前模式，true新增，false修改
 const isReloadData=ref(true)//局部刷新组件
 let ids: string[]=[]//要删除的ids
 let names:string[]=[]//要删除的文档名称
+const drawerVisible=ref(false)//内容预览是否可见
 
 const getDoc = () => {
   request.get("doc?ebookId="+ebookId).then((response)=>{
@@ -151,6 +162,7 @@ const setDisable=(treeSelectData:any,id:string)=>{
 const add=()=>{
   booleanSubmit.value=true
   resetDocForm()
+  valueHtml.value=""
   treeSelect.value=Tools.copy(theRoot).concat(Tools.copy(docs.value))//添加无选项
 }//添加按钮点击事件
 const reloadData = () => {
@@ -162,13 +174,18 @@ const reloadData = () => {
 const resetDocForm=()=>{
   docForm.value={ebookId:ebookId,sort:0,id:'',content: ''}
 }//重置DOC表单
-
+const clickShowDrawer=()=>{
+  drawerVisible.value=true
+  nextTick(()=>{
+    Prismjs.highlightAll()
+  })
+}//抽屉的点击事件
 
 //Editor
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 // 内容 HTML
-const valueHtml = ref()
+const valueHtml = ref('')
 const toolbarConfig = {excludeKeys: 'fullScreen'}
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
@@ -176,9 +193,27 @@ onBeforeUnmount(() => {
   if (editor == null) return
   editor.destroy()
 })
-const editorConfig = {}
+const editorConfig:any = {MENU_CONF: {}}
+editorConfig.MENU_CONF['codeSelectLang'] = {
+  codeLangs: [
+    {text: "Java", value: "java"},
+    {text: "Typescript", value: "typescript"},
+    {text: "Javascript", value: "javascript"},
+    {text: "SQL", value: "sql"},
+    {text: "Bash", value: "bash"},
+    {text: "Yml", value: "yml"},
+    {text: "CSS", value: "css"},
+    {text: "HTML", value: "html"},
+    {text: "XML", value: "xml"},
+    {text: "C", value: "c"},
+    {text: "C++", value: "cpp"},
+    {text: "Python", value: "python"},
+    {text: "Markdown", value: "markdown"}
+  ]
+} // 代码语言
 const handleCreated = (editor:any) => {
   editorRef.value = editor // 记录 editor 实例，重要！
+  console.log(editor.getMenuConfig('codeSelectLang').codeLangs)
 }
 //Editor
 
