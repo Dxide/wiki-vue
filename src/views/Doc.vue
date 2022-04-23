@@ -8,7 +8,7 @@
     </el-aside>
     </el-affix>
     <el-main>
-      <div v-html="valueHtml" style="width: 100%;"></div>
+      <div v-html="valueHtml" class="editor-content-view" style="width: 100%;"></div>
     </el-main>
   </el-container>
   <el-backtop />
@@ -66,4 +66,42 @@ onMounted(()=>{
   display:inline-block;
 }
 
+.editor-content-view p,
+.editor-content-view li {
+  white-space: pre-wrap; /* 保留空格 */
+}
+
+.editor-content-view blockquote {
+  border-left: 8px solid #d0e5f2;
+  padding: 10px 10px;
+  margin: 10px 0;
+  background-color: #f1f1f1;
+}
+
+.editor-content-view pre>code {
+  display: block;
+  padding: 10px;
+}
+
+.editor-content-view table {
+  border-collapse: collapse;
+}
+.editor-content-view td,
+.editor-content-view th {
+  border: 1px solid #ccc;
+  min-width: 50px;
+  height: 20px;
+}
+.editor-content-view th {
+  background-color: #f1f1f1;
+}
+
+.editor-content-view ul,
+.editor-content-view ol {
+  padding-left: 20px;
+}
+
+.editor-content-view input[type="checkbox"] {
+  margin-right: 5px;
+}
 </style>
