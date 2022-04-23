@@ -16,6 +16,7 @@
           <el-menu-item index="/ebook" class="item">首页</el-menu-item>
           <el-menu-item index="/admin/ebook" class="item">电子书管理</el-menu-item>
           <el-menu-item index="/admin/category" class="item">分类管理</el-menu-item>
+          <el-menu-item index="/admin/user" class="item">用户管理</el-menu-item>
           <el-menu-item index="/about" class="item">关于我们</el-menu-item>
         </el-menu>
       </el-col>
