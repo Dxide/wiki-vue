@@ -45,7 +45,7 @@
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="40%">
       <el-form :model="userForm" label-position="top">
-        <el-form-item label="用户名" >
+        <el-form-item label="用户名" v-show="!userForm.id">
           <el-input v-model="userForm.userName" clearable/>
         </el-form-item>
         <el-form-item label="昵称" >
