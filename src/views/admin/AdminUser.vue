@@ -52,7 +52,7 @@
           <el-input v-model="userForm.name" clearable/>
         </el-form-item>
         <el-form-item label="密码" >
-          <el-input v-model="userForm.password" clearable/>
+          <el-input v-model="userForm.password" type="password" show-password clearable/>
         </el-form-item>
       </el-form>
       <template #footer>
