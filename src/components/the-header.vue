@@ -21,7 +21,8 @@
         </el-menu>
       </el-col>
       <el-col :span="6" style="margin:  auto;text-align: right">
-        <el-button type="text" style="font-size: 18px" @click="clickLogin">登录</el-button>
+        <el-button type="text" style="font-size: 18px" @click="clickLogin" v-show="!isLogin">登录</el-button>
+        <span v-show="isLogin" style="font-size: 18px">{{userInfo.userName}}</span>
       </el-col>
     </el-row>
   </el-header>
@@ -46,13 +47,17 @@
 
 <script lang="ts" setup>
 import router from "@/router";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import request from "@/util/request";
 import {ElMessage} from "element-plus";
 
 const currentPath=ref(router.currentRoute.value.path)//设置高亮
 const loginDialogVisible=ref(false)//登录对话框
 const loginForm=ref({username:'',password:''})//登录表单
+const isLogin=ref(false);//是否登陆
+const userInfo=ref();//用户信息
+userInfo.value={userName:'user'}//设置默认值以防报错
+
 const clickLogin=()=>{
   loginForm.value={username: '',password: ''}
   loginDialogVisible.value=true
@@ -61,10 +66,21 @@ const login=()=>{
   request.post("user/login",loginForm.value).then((response:any)=>{
     ElMessage.success(response.message)
     loginDialogVisible.value=false
-    console.log(response)
+    localStorage.setItem("user",JSON.stringify(response.data))//保存登录信息
+    getUserInfo()
   })
 }//登录点击事件
+const getUserInfo=()=>{
+  let user = localStorage.getItem("user");
+  if (user!=null){
+    isLogin.value=true
+    userInfo.value=JSON.parse(user)
+  }
+}//获取用户信息，本地
 
+onMounted(()=>{
+  getUserInfo()
+})
 </script>
 
 <style scoped>
