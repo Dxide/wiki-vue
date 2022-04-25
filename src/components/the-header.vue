@@ -22,7 +22,15 @@
       </el-col>
       <el-col :span="6" style="margin:  auto;text-align: right">
         <el-button type="text" style="font-size: 18px" @click="clickLogin" v-show="!isLogin">登录</el-button>
-        <span v-show="isLogin" style="font-size: 18px">{{userInfo.userName}}</span>
+        <el-dropdown v-show="isLogin" size="large" style="cursor: pointer;align-items: center;">
+           <span style="font-size: 18px">{{userInfo.userName}}</span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item>个人中心</el-dropdown-item>
+              <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-col>
     </el-row>
   </el-header>
@@ -50,6 +58,7 @@ import router from "@/router";
 import {onMounted, ref} from "vue";
 import request from "@/util/request";
 import {ElMessage} from "element-plus";
+import {ArrowDown} from "@element-plus/icons-vue";
 
 const currentPath=ref(router.currentRoute.value.path)//设置高亮
 const loginDialogVisible=ref(false)//登录对话框
@@ -77,6 +86,10 @@ const getUserInfo=()=>{
     userInfo.value=JSON.parse(user)
   }
 }//获取用户信息，本地
+const logout=()=>{
+  isLogin.value=false
+  localStorage.clear()
+}//登出
 
 onMounted(()=>{
   getUserInfo()
