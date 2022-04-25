@@ -45,7 +45,7 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="loginDialogVisible = false">注册</el-button>
+        <el-button @click="ElMessage.warning('个人网站，暂未开放注册！')">注册</el-button>
         <el-button @click="loginDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="login">登录</el-button>
       </span>
